@@ -23,13 +23,13 @@ fn args() -> Vec<Value> {
     args
 }
 
-fn get_client() -> Client {
+async fn get_client() -> Client {
     let ns = "test";
     let client_opts = ClientOpts {
         namespace: Some(ns.to_string()),
         ..Default::default()
     };
-    let pool = create_redis_pool().unwrap();
+    let pool = create_redis_pool().await.unwrap();
     Client::new(pool, client_opts)
 }
 
@@ -61,14 +61,16 @@ fn test_job_format_with_default() {
 fn test_client_push() {
     let class = "MyClass".to_string();
     let job = Job::new(class.clone(), args(), Default::default());
-    let client = get_client();
-    match client.push(job) {
-        Ok(_) => assert!(true),
-        Err(err) => {
-            println!("Sidekiq push failed: {}", err);
-            assert!(false)
+    async {
+        let client = get_client().await;
+        match client.push(job).await {
+            Ok(_) => assert!(true),
+            Err(err) => {
+                println!("Sidekiq push failed: {}", err);
+                assert!(false)
+            }
         }
-    }
+    };
 }
 
 #[test]
@@ -78,12 +80,14 @@ fn test_client_push_bulk() {
         Job::new(class.clone(), args(), Default::default()),
         Job::new(class.clone(), args(), Default::default()),
     ];
-    let client = get_client();
-    match client.push_bulk(jobs) {
-        Ok(_) => assert!(true),
-        Err(err) => {
-            println!("Sidekiq push failed: {}", err);
-            assert!(false)
-        }
+    async {
+        let client = get_client().await;
+        match client.push_bulk(jobs).await {
+            Ok(_) => assert!(true),
+            Err(err) => {
+                println!("Sidekiq push failed: {}", err);
+                assert!(false)
+            }
+        };
     };
 }

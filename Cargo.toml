@@ -1,7 +1,7 @@
 [package]
 name = "sidekiq"
 # When updating version, also modify html_root_url in the src/lib.rs file.
-version = "0.8.6"
+version = "0.9.0-pre"
 authors = ["Laurent Arnoud <laurent@spkdev.net>"]
 description = "Rust Sidekiq Client"
 repository = "https://github.com/spk/rust-sidekiq.git"
@@ -10,6 +10,7 @@ keywords = ["job", "queue", "async", "sidekiq", "client"]
 license = "MIT"
 readme = "README.md"
 exclude = ["Makefile", "rustfmt.toml"]
+edition = "2018"
 
 [badges]
 travis-ci = { repository = "spk/rust-sidekiq" }
@@ -18,5 +19,7 @@ travis-ci = { repository = "spk/rust-sidekiq" }
 rand = "0.7"
 serde = "1.0"
 serde_json = "1.0"
-r2d2 = "0.8"
-r2d2_redis = "0.12"
+bb8 = { git = "https://github.com/khuey/bb8" }
+bb8-redis = { git = "https://github.com/khuey/bb8" }
+futures = { version = "0.3", features = ["compat"] }
+redis = "0.13"

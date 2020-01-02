@@ -1,4 +1,4 @@
-# Rust Sidekiq Client
+# Async Rust Sidekiq Client
 
 [Sidekiq](https://github.com/mperham/sidekiq) client allowing to push jobs.
 Using the [Sidekiq job
@@ -7,7 +7,7 @@ format](https://github.com/mperham/sidekiq/wiki/Job-Format) as reference.
 ## Dependencies
 
 * [redis](https://github.com/mitsuhiko/redis-rs)
-* [r2d2-redis](https://github.com/sorccu/r2d2-redis)
+* [bb8](https://github.com/khuey/bb8)
 * [serde_json](https://github.com/serde-rs/json)
 
 ## Installation

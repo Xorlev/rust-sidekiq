@@ -1,4 +1,3 @@
-#![feature(test)]
 extern crate test;
 #[macro_use]
 extern crate serde_json;
@@ -8,13 +7,13 @@ use serde_json::value::Value;
 use sidekiq::{create_redis_pool, Client, ClientOpts, Job};
 use test::Bencher;
 
-fn get_client() -> Client {
+async fn get_client() -> Client {
     let ns = "test";
     let client_opts = ClientOpts {
         namespace: Some(ns.to_string()),
         ..Default::default()
     };
-    let pool = create_redis_pool().unwrap();
+    let pool = create_redis_pool().await.unwrap();
     Client::new(pool, client_opts)
 }
 
@@ -35,10 +34,13 @@ fn args() -> Vec<Value> {
 
 #[bench]
 fn bench_simple_push(b: &mut Bencher) {
-    let client = get_client();
-    b.iter(|| {
-        let class = "Test".to_string();
-        let job = Job::new(class, args(), Default::default());
-        client.push(job)
-    });
+    async {
+        let client = get_client().await;
+        b.iter(|| {
+            let class = "Test".to_string();
+            let job = Job::new(class, args(), Default::default());
+            client.push(job)
+        })
+        .await;
+    };
 }
